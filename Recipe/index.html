@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe Book</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      color: #343a40;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 980px;
+      margin: auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .go-categories {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #ff6b6b;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
+      z-index: 999;
+      text-decoration: none;
+    }
+
+    .go-categories:hover {
+      background-color: #fa5252;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      color: #2b2d42;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      color: #495057;
+      font-weight: 500;
+    }
+
+    .chef-name {
+      font-size: 1rem;
+      margin-top: 8px;
+      color: #868e96;
+      font-style: italic;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 25px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      color: #212529;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    form input[type="file"] {
+      padding: 5px;
+    }
+
+    form button {
+      padding: 12px 24px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    form button:hover {
+      background: #218838;
+    }
+
+    .recipe-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .recipe-card {
+      background: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .recipe-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .recipe-card h3 {
+      padding: 15px;
+      font-size: 1.1rem;
+      color: #343a40;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #ced4da;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <a href="categories.html" class="go-categories">🍴 Go to Categories</a>
+
+  <div class="overlay">
+    <header>
+      <h1>🍽️ My Recipe Book</h1>
+      <p>Store, search, and savor your favorite recipes</p>
+      <div class="chef-name">The Chef – Pavan Kumar</div>
+    </header>
+
+    <div class="card">
+      <h2>Add a New Recipe</h2>
+      <form id="recipe-form">
+        <input type="text" id="name" placeholder="Recipe Name" required />
+        <textarea id="ingredients" placeholder="Ingredients" rows="4" required></textarea>
+        <textarea id="steps" placeholder="Preparation Steps" rows="4" required></textarea>
+        <input type="file" id="image" accept="image/*" />
+        <button type="submit">Add Recipe</button>
+      </form>
+    </div>
+
+    <div class="card search-bar">
+      <input type="text" id="search" placeholder="Search recipes by name or ingredient..." />
+    </div>
+
+    <div class="card">
+      <h2>All Recipes</h2>
+      <div class="recipe-list" id="recipe-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('recipe-form');
+    const recipeList = document.getElementById('recipe-list');
+    const searchInput = document.getElementById('search');
+
+    let recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+
+    function displayRecipes(filteredRecipes = recipes) {
+      recipeList.innerHTML = '';
+      filteredRecipes.forEach((recipe, index) => {
+        const card = document.createElement('div');
+        card.className = 'recipe-card';
+        card.innerHTML = `
+          <img src="${recipe.image || 'https://via.placeholder.com/300'}" alt="Recipe Image">
+          <h3>${recipe.name}</h3>
+        `;
+        card.addEventListener('click', () => {
+          alert(`Ingredients:\n${recipe.ingredients}\n\nSteps:\n${recipe.steps}`);
+        });
+        recipeList.appendChild(card);
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const ingredients = document.getElementById('ingredients').value.trim();
+      const steps = document.getElementById('steps').value.trim();
+      const imageFile = document.getElementById('image').files[0];
+
+      if (!name || !ingredients || !steps) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = function () {
+        const newRecipe = {
+          name,
+          ingredients,
+          steps,
+          image: reader.result
+        };
+        recipes.push(newRecipe);
+        localStorage.setItem('recipes', JSON.stringify(recipes));
+        displayRecipes();
+        form.reset();
+      };
+
+      if (imageFile) {
+        reader.readAsDataURL(imageFile);
+      } else {
+        reader.onloadend();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = recipes.filter(recipe =>
+        recipe.name.toLowerCase().includes(query) ||
+        recipe.ingredients.toLowerCase().includes(query)
+      );
+      displayRecipes(filtered);
+    });
+
+    displayRecipes();
+  </script>
+</body>
+</html>

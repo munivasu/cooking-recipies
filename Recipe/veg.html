@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Veg</title> <!-- Changed from 'Veg Recipes' or 'Only Veg' to 'Veg' -->
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .recipe-card {
+      background: #fefefe;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .recipe-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .recipe-info {
+      padding: 15px;
+    }
+
+    .recipe-info input {
+      width: 100%;
+      border: none;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #333;
+      background: transparent;
+      margin-bottom: 10px;
+    }
+
+    .recipe-info input:focus {
+      outline: none;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .buttons button {
+      flex: 1;
+      margin: 5px;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .edit-btn {
+      background-color: #ffc107;
+      color: white;
+    }
+
+    .save-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🥗 Veg</h1> <!-- Updated header from 'Veg Recipes' or 'Only Veg' to just 'Veg' -->
+    <div class="recipe-grid" id="recipeGrid"></div>
+
+    <a href="categories.html" class="back-link">← Back to Categories</a>
+  </div>
+
+  <script>
+    const recipes = [
+      {
+        name: "Khichdi Recipe",
+        image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2021/06/khichdi-recipe.jpg"
+      },
+      {
+        name: "Bagara Baingan Recipe",
+        image: "https://www.cookwithmanali.com/wp-content/uploads/2019/07/Bagara-Baingan.jpg"
+      },
+      {
+        name: "Baby Corn Fry Recipe",
+        image: "https://www.indianveggiedelight.com/wp-content/uploads/2022/09/baby-corn-fry-featured.jpg"
+      },
+      {
+        name: "Dosa Recipe, How to make Dosa Batter",
+        image: "https://www.vegrecipesofindia.com/wp-content/uploads/2021/07/dosa-recipe-1.jpg"
+      },
+      {
+        name: "Jalebi recipe",
+        image: "https://www.vegrecipesofindia.com/wp-content/uploads/2021/09/jalebi-recipe-1.jpg"
+      },
+      {
+        name: "Aloo Baingan Recipe",
+        image: "https://www.indianveggiedelight.com/wp-content/uploads/2022/09/aloo-baingan-recipe.jpg"
+      },
+      {
+        name: "Aloo Mushroom Curry Recipe | Potato Mushroom Gravy",
+        image: "https://www.whiskaffair.com/wp-content/uploads/2020/11/Aloo-Mushroom-Curry-2-3.jpg"
+      },
+      {
+        name: "Bread Upma Recipe (Bread Poha)",
+        image: "https://www.vegrecipesofindia.com/wp-content/uploads/2022/07/bread-upma-1.jpg"
+      }
+    ];
+
+    function loadRecipes() {
+      const grid = document.getElementById("recipeGrid");
+      grid.innerHTML = '';
+
+      recipes.forEach((recipe, index) => {
+        const card = document.createElement("div");
+        card.className = "recipe-card";
+
+        card.innerHTML = `
+          <img src="${recipe.image}" alt="${recipe.name}">
+          <div class="recipe-info">
+            <input type="text" value="${recipe.name}" id="recipe-${index}" readonly />
+            <div class="buttons">
+              <button class="edit-btn" onclick="enableEdit(${index})">Edit</button>
+              <button class="save-btn" onclick="saveRecipe(${index})">Save</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function enableEdit(index) {
+      const input = document.getElementById(`recipe-${index}`);
+      input.removeAttribute("readonly");
+      input.focus();
+    }
+
+    function saveRecipe(index) {
+      const input = document.getElementById(`recipe-${index}`);
+      input.setAttribute("readonly", true);
+      recipes[index].name = input.value.trim();
+      alert(`Saved: ${recipes[index].name}`);
+    }
+
+    loadRecipes();
+  </script>
+</body>
+</html>
